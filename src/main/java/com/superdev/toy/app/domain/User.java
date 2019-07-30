@@ -1,31 +1,36 @@
 package com.superdev.toy.app.domain;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
 @Table(name="tb_user")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User {
 
     @Id
-    @Column(name="user_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long seq;
+
+    @Column(unique = true)
     private String userId;
 
-    @Column(name="user_nm")
+    @Column
     private String userNm;
 
-    @Column(name="user_pwd")
+    @Column
     private String userPwd;
 
-    @Column(name="reg_dt")
-    private String regDt;
+    @Column
+    @CreationTimestamp
+    private LocalDateTime regDt;
 
-    @Column(name="upd_dt")
-    private String updDt;
+    @Column
+    @UpdateTimestamp
+    private LocalDateTime updDt;
 
 }

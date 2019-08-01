@@ -1,20 +1,18 @@
 package com.superdev.toy.app.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import javax.persistence.*;
+
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import static java.util.stream.Collectors.toList;
+import lombok.Data;
 
 @Data
 @Entity
@@ -25,10 +23,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long seq;
 
-    @Column(unique = true)
+    @Column
     private String userId;
 
-    @Column
+    @Column(length = 30, unique = true)
     private String userNm;
 
     @Column

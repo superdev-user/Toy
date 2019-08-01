@@ -2,8 +2,8 @@ package com.superdev.toy.web.common.jwt;
 
 import com.superdev.toy.web.common.jwt.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +25,7 @@ public class JwtTokenProvider {
     private long validityInMilliseconds = 60000;
 
     @Autowired
+    @Qualifier("userService")
     private UserDetailsService userDetailsService;
 
     @PostConstruct

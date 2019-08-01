@@ -19,3 +19,7 @@ spring:
     ansi:
       enabled: always
 
+security:
+  jwt:
+    token:
+      secret-key: toy

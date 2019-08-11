@@ -1,4 +1,5 @@
-## IntelliJ method not found ( lombok setting ) -> http://blog.devenjoy.com/?p=383
+## IntelliJ method not found ( lombok setting )
+##  -> http://blog.devenjoy.com/?p=383
 
 ##회원가입 API
 ~~~

@@ -77,4 +77,24 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(seq, user.seq) &&
+                Objects.equals(userId, user.userId) &&
+                Objects.equals(userNm, user.userNm) &&
+                Objects.equals(userPwd, user.userPwd) &&
+                Objects.equals(regDt, user.regDt) &&
+                Objects.equals(updDt, user.updDt) &&
+                Objects.equals(roles, user.roles);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(seq, userId, userNm, userPwd, regDt, updDt, roles);
+    }
 }

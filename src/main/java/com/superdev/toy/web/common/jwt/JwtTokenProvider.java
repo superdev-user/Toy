@@ -22,7 +22,7 @@ public class JwtTokenProvider {
     @Value("${security.jwt.token.secret-key:toy}")
     private String secretKey;
 
-    private long validityInMilliseconds = 60000;
+    private long validityInMilliseconds = 600000;
 
     @Autowired
     @Qualifier("userService")

@@ -3,6 +3,7 @@ package com.superdev.toy;
 import java.util.Arrays;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,12 @@ public class ToyApplicationTests {
     private JwtTokenProvider jwtTokenProvider;
 
     @Test
+    @Ignore
     public void contextLoads() {
 
         String token = jwtTokenProvider.createToken("user", Arrays.asList("user"));
 
-        log.info("Token : {}", token);
+//        log.info("Token : {}", token);
         Assert.assertNotNull(token);
     }
 

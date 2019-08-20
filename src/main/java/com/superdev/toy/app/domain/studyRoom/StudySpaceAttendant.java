@@ -16,26 +16,28 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "studyRoomAttendantRequest", indexes = {
-        @Index(name = "studyRoomAttendantRequestIdx_01", columnList = "requester_seq", unique = true)
-        , @Index(name = "studyRoomAttendantRequestRoomIdx_01", columnList = "studyRoom_id")
+        @Index(name = "studyRoomAttendantRequestIdx_01", columnList = "requestSeq", unique = true)
+        , @Index(name = "studyRoomAttendantRequestRoomIdx_01", columnList = "studySpaceId")
 })
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudyRoomAttendant {
+public class StudySpaceAttendant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Enumerated(EnumType.STRING)
-    private StudyRoomAttendantStatus approved;
+    private StudySpaceAttendantStatus approved;
 
     @OneToOne
+    @JoinColumn(name = "requestSeq")
     private User requester;
 
     @ManyToOne
-    private StudyRoom studyRoom;
+    @JoinColumn(name = "studySpaceId")
+    private StudySpace studySpace;
 
     @Column
     @CreationTimestamp
@@ -47,7 +49,7 @@ public class StudyRoomAttendant {
 
     private String updatedBy;
 
-    public StudyRoomAttendantStatus isApproved(){
+    public StudySpaceAttendantStatus isApproved(){
         return this.approved;
     }
 
@@ -55,7 +57,7 @@ public class StudyRoomAttendant {
         return this.requester;
     }
 
-    public void updateApproved(StudyRoomAttendantStatus approved, String updatedBy){
+    public void updateApproved(StudySpaceAttendantStatus approved, String updatedBy){
         this.approved = approved;
         this.updatedBy = updatedBy;
     }
@@ -64,16 +66,16 @@ public class StudyRoomAttendant {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StudyRoomAttendant attendant = (StudyRoomAttendant) o;
+        StudySpaceAttendant attendant = (StudySpaceAttendant) o;
         return id == attendant.id &&
                 approved == attendant.approved &&
                 Objects.equals(requester, attendant.requester) &&
-                Objects.equals(studyRoom, attendant.studyRoom);
+                Objects.equals(studySpace, attendant.studySpace);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, approved, requester, studyRoom);
+        return Objects.hash(id, approved, requester, studySpace);
     }
 }

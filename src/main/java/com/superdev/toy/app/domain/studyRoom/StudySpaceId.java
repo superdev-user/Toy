@@ -10,10 +10,10 @@ import java.util.Objects;
  */
 @Embeddable
 @NoArgsConstructor
-public class StudyRoomId {
+public class StudySpaceId {
     private String id;
 
-    public StudyRoomId(String id){
+    public StudySpaceId(String id){
         this.id = id;
     }
 
@@ -25,7 +25,7 @@ public class StudyRoomId {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StudyRoomId that = (StudyRoomId) o;
+        StudySpaceId that = (StudySpaceId) o;
         return Objects.equals(id, that.id);
     }
 
@@ -37,7 +37,7 @@ public class StudyRoomId {
 
     @Override
     public String toString() {
-        return "StudyRoomId{" +
+        return "StudySpaceId{" +
                 "id='" + id + '\'' +
                 '}';
     }

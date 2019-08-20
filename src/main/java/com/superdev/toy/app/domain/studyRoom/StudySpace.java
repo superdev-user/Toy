@@ -1,7 +1,7 @@
 package com.superdev.toy.app.domain.studyRoom;
 
 import com.superdev.toy.app.domain.User;
-import com.superdev.toy.app.exception.AlreadyParticipationStudyRoomException;
+import com.superdev.toy.app.exception.AlreadyParticipationStudySpaceException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
@@ -12,7 +12,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,11 +19,11 @@ import java.util.Set;
  * Created by kimyc on 15/08/2019.
  */
 @Entity
-@Table(name = "studyRoom")
+@Table(name = "studySpace")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StudyRoom {
+public class StudySpace {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +31,8 @@ public class StudyRoom {
 
 
     @Embedded
-    @AttributeOverride(name = "id", column = @Column(name = "studyRoomId", unique = true, length = 40))
-    private StudyRoomId studyRoomId;
+    @AttributeOverride(name = "id", column = @Column(name = "studySpaceId", unique = true, length = 40))
+    private StudySpaceId studySpaceId;
 
     @Column(length = 100)
     private String title;
@@ -47,21 +46,21 @@ public class StudyRoom {
 
     @OneToMany(cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
-    @JoinTable(name = "studyRoomUserMapped", joinColumns = @JoinColumn(name = "studyRoomId"),
+    @JoinTable(name = "studySpaceUserMapped", joinColumns = @JoinColumn(name = "studySpaceId"),
             inverseJoinColumns = @JoinColumn(name = "seq"))
     private Set<User> attendants;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
-    @JoinTable(name = "studyRoomOperatorMapped", joinColumns = @JoinColumn(name = "studyRoomId"),
+    @JoinTable(name = "studySpaceOperatorMapped", joinColumns = @JoinColumn(name = "studySpaceId"),
             inverseJoinColumns = @JoinColumn(name = "seq"))
     private Set<User> operators;
 
     @OneToMany(cascade = CascadeType.ALL)
     @Fetch(FetchMode.SUBSELECT)
-    @JoinTable(name = "studyRoomUserMapped", joinColumns = @JoinColumn(name = "studyRoomId"),
+    @JoinTable(name = "studySpaceUserMapped", joinColumns = @JoinColumn(name = "studySpaceId"),
             inverseJoinColumns = @JoinColumn(name = "seq"))
-    private Set<StudyRoomAttendant> requests;
+    private Set<StudySpaceAttendant> requests;
 
 
     @Column
@@ -73,12 +72,12 @@ public class StudyRoom {
     private LocalDateTime updatedAt;
 
 
-    public void studyRoomMaster(User user){
+    public void studySpaceMaster(User user){
         this.master = user;
     }
 
-    public void studyRoomId(StudyRoomId studyRoomId){
-        this.studyRoomId = studyRoomId;
+    public void studySpaceId(StudySpaceId studySpaceId){
+        this.studySpaceId = studySpaceId;
     }
 
     public void addAttendant(User user){
@@ -97,21 +96,21 @@ public class StudyRoom {
         operators.add(user);
     }
 
-    public StudyRoomAttendant addStudyRoomAttendantRequest(User applicant){
+    public StudySpaceAttendant addStudySpaceAttendantRequest(User applicant){
         if(requests == null){
             requests = new HashSet<>();
         }
 
-        StudyRoomAttendant studyRoomAttendant = StudyRoomAttendant.builder().approved(StudyRoomAttendantStatus.REQUEST).requester(applicant).studyRoom(this).build();
-        if(requests.contains(studyRoomAttendant)){
-            throw new AlreadyParticipationStudyRoomException(this.studyRoomId);
+        StudySpaceAttendant studySpaceAttendant = StudySpaceAttendant.builder().approved(StudySpaceAttendantStatus.REQUEST).requester(applicant).studySpace(this).build();
+        if(requests.contains(studySpaceAttendant)){
+            throw new AlreadyParticipationStudySpaceException(this.studySpaceId);
         }
-        requests.add(studyRoomAttendant);
-        return studyRoomAttendant;
+        requests.add(studySpaceAttendant);
+        return studySpaceAttendant;
     }
 
-    public StudyRoomId studyRoomId(){
-        return this.studyRoomId;
+    public StudySpaceId studySpaceId(){
+        return this.studySpaceId;
     }
 
     public String title(){
@@ -140,15 +139,15 @@ public class StudyRoom {
         return this.master;
     }
 
-    public Set<StudyRoomAttendant> studyRoomAttendantRequests(){
+    public Set<StudySpaceAttendant> studySpaceAttendantRequests(){
         if(this.requests == null){
             return new HashSet<>();
         }
         return this.requests;
     }
 
-    public StudyRoom approveAttend(StudyRoomAttendant attendant){
-        attendant.updateApproved(StudyRoomAttendantStatus.OK, master.getUsername());
+    public StudySpace approveAttend(StudySpaceAttendant attendant){
+        attendant.updateApproved(StudySpaceAttendantStatus.OK, master.getUsername());
         addAttendant(attendant.requester());
         return this;
     }

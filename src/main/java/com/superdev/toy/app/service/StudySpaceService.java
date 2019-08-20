@@ -1,7 +1,7 @@
 package com.superdev.toy.app.service;
 
 import com.superdev.toy.app.domain.User;
-import com.superdev.toy.app.domain.studyRoom.*;
+import com.superdev.toy.app.domain.studySpace.*;
 import com.superdev.toy.app.exception.StudySpaceNotFoundException;
 import com.superdev.toy.app.exception.StudySpaceNotMasterException;
 import com.superdev.toy.app.repo.StudySpaceAttendantRepository;

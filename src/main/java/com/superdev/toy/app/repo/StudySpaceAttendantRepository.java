@@ -1,8 +1,8 @@
 package com.superdev.toy.app.repo;
 
 import com.superdev.toy.app.domain.User;
-import com.superdev.toy.app.domain.studyRoom.StudySpace;
-import com.superdev.toy.app.domain.studyRoom.StudySpaceAttendant;
+import com.superdev.toy.app.domain.studySpace.StudySpace;
+import com.superdev.toy.app.domain.studySpace.StudySpaceAttendant;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

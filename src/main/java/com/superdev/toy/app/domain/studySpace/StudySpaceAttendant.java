@@ -1,4 +1,4 @@
-package com.superdev.toy.app.domain.studyRoom;
+package com.superdev.toy.app.domain.studySpace;
 
 import com.superdev.toy.app.domain.User;
 import lombok.AllArgsConstructor;

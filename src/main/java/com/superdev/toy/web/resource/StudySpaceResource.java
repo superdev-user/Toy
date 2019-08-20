@@ -1,6 +1,6 @@
 package com.superdev.toy.web.resource;
 
-import com.superdev.toy.app.domain.studyRoom.StudySpaceId;
+import com.superdev.toy.app.domain.studySpace.StudySpaceId;
 import com.superdev.toy.app.exception.AlreadyParticipationStudySpaceException;
 import com.superdev.toy.app.exception.StudySpaceNotFoundException;
 import com.superdev.toy.app.exception.StudySpaceNotMasterException;
@@ -22,17 +22,17 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by kimyc on 15/08/2019.
  */
-@Api(description = "스터디 룸 API")
+@Api(description = "스터디 모임 API")
 @RestController
-@RequestMapping("studyRoom")
+@RequestMapping("studySpace")
 @Slf4j
-public class StudyRoomResource {
+public class StudySpaceResource {
 
     private StudySpaceService studySpaceService;
     private StudySpaceMapper studySpaceMapper;
 
     @Autowired
-    public StudyRoomResource(
+    public StudySpaceResource(
             StudySpaceService studySpaceService
         , StudySpaceMapper studySpaceMapper
     ){
@@ -40,12 +40,12 @@ public class StudyRoomResource {
         this.studySpaceMapper = studySpaceMapper;
     }
 
-    @ApiOperation(value = "스터디 룸 생성", response = StudySpaceResponse.class)
+    @ApiOperation(value = "스터디 모임 생성", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
     })
     @PostMapping
-    public ResponseEntity saveStudyRoom(
+    public ResponseEntity saveStudySpace(
             @AuthenticationPrincipal UserDetails user
             , @RequestBody StudySpaceRequest request
             ){
@@ -60,16 +60,16 @@ public class StudyRoomResource {
         }
     }
 
-    @ApiOperation(value = "스터디 룸 정보 조회", response = StudySpaceResponse.class)
+    @ApiOperation(value = "스터디 모임 정보 조회", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "success")
-            , @ApiResponse(code = 404, message = "Study Room Not founded")
-            , @ApiResponse(code = 406, message = "User is not master of study room")
+            , @ApiResponse(code = 404, message = "Study Space Not founded")
+            , @ApiResponse(code = 406, message = "User is not master of study Space")
     })
-    @GetMapping("{studyRoomId}")
-    public ResponseEntity findStudyRoomInfo(
+    @GetMapping("{studySpaceId}")
+    public ResponseEntity findStudySpaceInfo(
             @AuthenticationPrincipal UserDetails user
-            , @PathVariable(name = "studyRoomId") StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
     ){
         try{
             return ResponseEntity.ok(studySpaceService.findStudySpaceInfo(studySpaceId, user));
@@ -81,12 +81,12 @@ public class StudyRoomResource {
     }
 
 
-    @ApiOperation(value = "스터디 룸 리스트 조회", response = StudySpaceListResponse.class)
+    @ApiOperation(value = "스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
     })
     @GetMapping
-    public ResponseEntity findStudyRoomList(
+    public ResponseEntity findStudySpaceList(
             @AuthenticationPrincipal UserDetails user
             , @RequestParam(name = "title", required = false) String title
             , @RequestParam(name = "page", defaultValue = "0") int page
@@ -95,12 +95,12 @@ public class StudyRoomResource {
         return ResponseEntity.ok(studySpaceService.findStudySpaceList(user, title, page, pageSize));
     }
 
-    @ApiOperation(value = "사용자 스터디 룸 리스트 조회", response = StudySpaceListResponse.class)
+    @ApiOperation(value = "사용자 스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
     })
     @GetMapping("list")
-    public ResponseEntity findStudyRoomListForUser(
+    public ResponseEntity findStudySpaceListForUser(
             @RequestParam(name = "title", required = false) String title
             , @RequestParam(name = "page", defaultValue = "0") int page
             , @RequestParam(name = "pageSize", defaultValue = "20") int pageSize
@@ -109,15 +109,15 @@ public class StudyRoomResource {
     }
 
 
-    @ApiOperation(value = "스터디 룸 참가 신청", response = SuccessResponse.class)
+    @ApiOperation(value = "스터디 모임 참가 신청", response = SuccessResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
-            , @ApiResponse(code = 404, message = "스터디 룸을 찾을 수 없습니다.")
+            , @ApiResponse(code = 404, message = "스터디 모임을 찾을 수 없습니다.")
     })
-    @PutMapping("/participation/{studyRoomId}")
-    public ResponseEntity participationStudyRoom(
+    @PutMapping("/participation/{studySpaceId}")
+    public ResponseEntity participationStudySpace(
             @AuthenticationPrincipal UserDetails user
-            , @PathVariable(name = "studyRoomId")StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId")StudySpaceId studySpaceId
             ){
         try{
             studySpaceService.participationStudySpace(studySpaceId, user);
@@ -129,15 +129,15 @@ public class StudyRoomResource {
         }
     }
 
-    @ApiOperation(value = "스터디 룸 참가 신청 해제", response = SuccessResponse.class)
+    @ApiOperation(value = "스터디 모임 참가 신청 해제", response = SuccessResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
-            , @ApiResponse(code = 404, message = "스터디 룸을 찾을 수 없습니다.")
+            , @ApiResponse(code = 404, message = "스터디 모임을 찾을 수 없습니다.")
     })
-    @DeleteMapping("/participation/{studyRoomId}")
-    public ResponseEntity unParticipationStudyRoom(
+    @DeleteMapping("/participation/{studySpaceId}")
+    public ResponseEntity unParticipationStudySpace(
             @AuthenticationPrincipal UserDetails user
-            , @PathVariable(name = "studyRoomId")StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId")StudySpaceId studySpaceId
     ){
         try{
             studySpaceService.unParticipationSpace(studySpaceId, user);
@@ -151,13 +151,13 @@ public class StudyRoomResource {
     @ApiOperation(value = "스터디 참가 신청 허가", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "success")
-            , @ApiResponse(code = 404, message = "Study Room Not founded")
-            , @ApiResponse(code = 406, message = "User is not master of study room")
+            , @ApiResponse(code = 404, message = "Study Space Not founded")
+            , @ApiResponse(code = 406, message = "User is not master of study space")
     })
-    @PutMapping("/approve/{studyRoomId}/{attendantNm}")
+    @PutMapping("/approve/{studySpaceId}/{attendantNm}")
     public ResponseEntity approveAttendant(
             @AuthenticationPrincipal UserDetails userDetails
-            , @PathVariable(name = "studyRoomId") StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
             , @PathVariable(name = "attendantNm") String attendantNm
     ){
 
@@ -173,13 +173,13 @@ public class StudyRoomResource {
     @ApiOperation(value = "스터디 참가 신청 거부", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "success")
-            , @ApiResponse(code = 404, message = "Study Room Not founded")
-            , @ApiResponse(code = 406, message = "User is not master of study room")
+            , @ApiResponse(code = 404, message = "Study Space Not founded")
+            , @ApiResponse(code = 406, message = "User is not master of study Space")
     })
-    @DeleteMapping("/approve/{studyRoomId}/{attendantNm}")
+    @DeleteMapping("/approve/{studySpaceId}/{attendantNm}")
     public ResponseEntity unApproveAttendant(
             @AuthenticationPrincipal UserDetails userDetails
-            , @PathVariable(name = "studyRoomId") StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
             , @PathVariable(name = "attendantNm") String attendantNm
     ){
 
@@ -193,16 +193,16 @@ public class StudyRoomResource {
     }
 
 
-    @ApiOperation(value = "스터디 룸 삭제 처리", response = SuccessResponse.class)
+    @ApiOperation(value = "스터디 모임 삭제 처리", response = SuccessResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "success")
-            , @ApiResponse(code = 404, message = "Study Room Not founded")
-            , @ApiResponse(code = 406, message = "User is not master of study room")
+            , @ApiResponse(code = 404, message = "Study Space Not founded")
+            , @ApiResponse(code = 406, message = "User is not master of study Space")
     })
-    @DeleteMapping("{studyRoomId}")
-    public ResponseEntity deleteStudyRoom(
+    @DeleteMapping("{studySpaceId}")
+    public ResponseEntity deleteStudySpace(
             @AuthenticationPrincipal UserDetails user
-            , @PathVariable(name = "studyRoomId") StudySpaceId studySpaceId
+            , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
     ){
         try{
             studySpaceService.deleteStudySpace(user, studySpaceId);

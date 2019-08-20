@@ -1,6 +1,6 @@
 package com.superdev.toy.web.domain.mapper;
 
-import com.superdev.toy.app.domain.studyRoom.StudySpace;
+import com.superdev.toy.app.domain.studySpace.StudySpace;
 import com.superdev.toy.web.domain.StudySpaceRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.NullValuePropertyMappingStrategy;

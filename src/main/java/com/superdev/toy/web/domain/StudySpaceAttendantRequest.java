@@ -1,7 +1,7 @@
 package com.superdev.toy.web.domain;
 
-import com.superdev.toy.app.domain.studyRoom.StudySpaceAttendant;
-import com.superdev.toy.app.domain.studyRoom.StudySpaceAttendantStatus;
+import com.superdev.toy.app.domain.studySpace.StudySpaceAttendant;
+import com.superdev.toy.app.domain.studySpace.StudySpaceAttendantStatus;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

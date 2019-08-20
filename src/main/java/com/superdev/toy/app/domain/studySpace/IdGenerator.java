@@ -1,4 +1,4 @@
-package com.superdev.toy.app.domain.studyRoom;
+package com.superdev.toy.app.domain.studySpace;
 
 import org.springframework.stereotype.Service;
 

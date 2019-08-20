@@ -1,7 +1,7 @@
 package com.superdev.toy.app.exception;
 
 import com.superdev.toy.app.domain.User;
-import com.superdev.toy.app.domain.studyRoom.StudySpace;
+import com.superdev.toy.app.domain.studySpace.StudySpace;
 import com.superdev.toy.web.domain.ErrorCodes;
 
 /**

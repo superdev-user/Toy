@@ -1,6 +1,6 @@
 package com.superdev.toy.web.domain;
 
-import com.superdev.toy.app.domain.studyRoom.StudySpaceAttendant;
+import com.superdev.toy.app.domain.studySpace.StudySpaceAttendant;
 import lombok.Data;
 
 /**

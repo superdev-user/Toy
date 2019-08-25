@@ -30,6 +30,7 @@ public class UserResource {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin("*")
     @PostMapping("/signup")
     public ResponseEntity<UserResponse> join(@RequestBody UserRequest userReq){
 
@@ -38,6 +39,7 @@ public class UserResource {
         String token = jwtTokenProvider.createToken(user.getUsername(), this.userService.getUserName(user.getUserNm()).getRoles());
         return ok(new UserResponse(user.getUsername(), token));
     }
+
 
     @PostMapping("/signin")
     public ResponseEntity<UserResponse> signin(@RequestBody UserRequest userReq) {

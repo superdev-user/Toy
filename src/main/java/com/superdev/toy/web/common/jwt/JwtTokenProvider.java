@@ -47,11 +47,15 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
+        System.out.println("sisisisisibal");
         UserDetails userDetails = this.userDetailsService.loadUserByUsername(getUsername(token));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
     public String getUsername(String token) {
+        System.out.println("-----____-----");
+        System.out.println(token);
+        System.out.println("-----____-----");
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 

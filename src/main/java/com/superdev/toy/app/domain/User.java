@@ -23,10 +23,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long seq;
 
-    @Column
+    @Column(length = 30, unique = true)
     private String userId;
 
-    @Column(length = 30, unique = true)
+    @Column(length = 30)
     private String userNm;
 
     @Column
@@ -55,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.userNm;
+        return this.userId;
     }
 
     @Override

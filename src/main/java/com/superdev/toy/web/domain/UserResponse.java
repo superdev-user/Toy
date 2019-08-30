@@ -6,7 +6,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserResponse {
 
-    private String userNm;
+    private String userId;
 
     private String token;
 
@@ -16,8 +16,8 @@ public class UserResponse {
         this.statusCode = statusCode;
     }
 
-    public UserResponse(String userNm, String token , int statusCode) {
-        this.userNm = userNm;
+    public UserResponse(String userId, String token , int statusCode) {
+        this.userId = userId;
         this.token = token;
         this.statusCode = statusCode;
     }

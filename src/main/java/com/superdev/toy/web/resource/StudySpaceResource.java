@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Created by kimyc on 15/08/2019.
  */
+
 @Api(description = "스터디 모임 API")
 @RestController
 @RequestMapping("studySpace")
@@ -40,6 +41,8 @@ public class StudySpaceResource {
         this.studySpaceMapper = studySpaceMapper;
     }
 
+
+    @CrossOrigin("*")
     @ApiOperation(value = "스터디 모임 생성", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
@@ -51,6 +54,7 @@ public class StudySpaceResource {
             ){
 
         try{
+            log.info("{}", user);
             log.info("{} : {}", request.getTitle(), request.getDescription());
 //            return ResponseEntity.ok(studyRoomService.saveStudySpace(studySpaceMapper.map(request), user));
             return ResponseEntity.ok(studySpaceService.saveStudySpace(request, user));
@@ -81,6 +85,7 @@ public class StudySpaceResource {
     }
 
 
+    @CrossOrigin("*")
     @ApiOperation(value = "스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")

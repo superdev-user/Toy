@@ -60,9 +60,7 @@ public class UserResource {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserId(), userReq.getUserPwd()));
 
             String token = jwtTokenProvider.createToken(userReq.getUserId(), user.getRoles());
-            System.out.println("signinToken--");
-            System.out.println(token);
-            System.out.println("signinToken--");
+
             response = new UserResponse(userReq.getUserId(), token, HttpStatus.OK.value());
 
         } catch (Exception err) {

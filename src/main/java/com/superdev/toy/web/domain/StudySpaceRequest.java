@@ -16,14 +16,14 @@ public class StudySpaceRequest {
     private String studyRoomId;
     private String title;
     private String description;
-    private String masterNm;
+    private String masterId;
     private List<UserRequest> attendants;
     private List<UserRequest> operators;
     private List<StudySpaceAttendantRequest> requests;
 
     public StudySpaceRequest(StudySpace studySpace){
         this.studyRoomId = studySpace.studySpaceId().idString();
-        this.masterNm = studySpace.master().getUserNm();
+        this.masterId = studySpace.master().getUserId();
         this.title = studySpace.title();
         this.description = studySpace.description();
         this.attendants = studySpace.attendants().stream().map(i -> new UserRequest(i)).collect(Collectors.toList());

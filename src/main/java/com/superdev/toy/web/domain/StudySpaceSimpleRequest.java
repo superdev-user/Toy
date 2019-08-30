@@ -11,12 +11,12 @@ public class StudySpaceSimpleRequest {
     private String studyRoomId;
     private String title;
     private String description;
-    private String masterNm;
+    private String masterId;
 
     public StudySpaceSimpleRequest(StudySpace studySpace){
         this.studyRoomId = studySpace.studySpaceId().idString();
         this.title = studySpace.title();
         this.description = studySpace.description();
-        this.masterNm = studySpace.master().getUserNm();
+        this.masterId = studySpace.master().getUserId();
     }
 }

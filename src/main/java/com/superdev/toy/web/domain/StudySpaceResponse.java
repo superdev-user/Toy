@@ -1,6 +1,5 @@
 package com.superdev.toy.web.domain;
 
-import com.superdev.toy.app.domain.studySpace.StudySpace;
 import lombok.Data;
 
 /**
@@ -12,7 +11,7 @@ public class StudySpaceResponse<T> extends SuccessResponse {
         setData(request);
     }
 
-    public StudySpaceResponse(StudySpace studySpace){
-        setData(new StudySpaceRequest(studySpace));
+    public StudySpaceResponse(com.superdev.toy.app.domain.studySpace.StudySpace studySpace){
+        setData(new StudySpaceInfo(studySpace));
     }
 }

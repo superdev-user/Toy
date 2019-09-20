@@ -14,7 +14,6 @@ import java.util.List;
  */
 @Repository
 public interface StudySpaceRepository extends JpaRepository<StudySpace, Long> {
-    List<StudySpace> findByMasterAndTitleStartingWith(String title, Pageable pageable);
     List<StudySpace> findByTitleStartingWith(String title, Pageable pageable);
     List<StudySpace> findByMaster(User master, Pageable pageable);
     StudySpace findByStudySpaceId(StudySpaceId studySpaceId);

@@ -13,8 +13,8 @@ public class StudySpaceListResponse<T> extends SuccessResponse {
 
     @Data
     public static class StudyRoomListRequest{
-        private List<StudySpaceRequest> requests = new ArrayList<>();
-        public StudyRoomListRequest(List<StudySpaceRequest> studyRooms){
+        private List<StudySpaceInfo> requests = new ArrayList<>();
+        public StudyRoomListRequest(List<StudySpaceInfo> studyRooms){
             requests = (studyRooms == null ? new ArrayList<>() : studyRooms);
         }
     }

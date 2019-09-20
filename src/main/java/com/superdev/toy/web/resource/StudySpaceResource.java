@@ -33,7 +33,7 @@ public class StudySpaceResource {
     @Autowired
     private StudySpaceService studySpaceService;
 
-    @CrossOrigin("*")
+
     @ApiOperation(value = "스터디 모임 생성", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
@@ -86,26 +86,12 @@ public class StudySpaceResource {
         return ResponseEntity.ok(studySpaceService.findStudySpaceList(title, page, pageSize));
     }
 
-    /*
-    @ApiOperation(value = "사용자 스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공")
-    })
-    @GetMapping("list")
-    public ResponseEntity findStudySpaceListForUser(
-            @RequestParam(name = "title", required = false) String title
-            , @RequestParam(name = "page", defaultValue = "0") int page
-            , @RequestParam(name = "pageSize", defaultValue = "20") int pageSize
-    ){
-        return ResponseEntity.ok(studySpaceService.findStudySpaceListForUser(title, page, pageSize));
-    }
-    */
-
     @ApiOperation(value = "스터디 모임 참가 신청", response = SuccessResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
             , @ApiResponse(code = 404, message = "스터디 모임을 찾을 수 없습니다.")
     })
+
     @PutMapping("/participation/{studySpaceId}")
     public ResponseEntity participationStudySpace(
             @AuthenticationPrincipal UserDetails user

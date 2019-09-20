@@ -138,29 +138,11 @@ public class StudySpaceService {
 
     @Transactional(readOnly = true)
     public StudySpaceResponse findStudySpaceInfo(StudySpaceId studySpaceId, String authName){
-        // User master = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
         if(studySpace == null){
             throw new StudySpaceNotFoundException(studySpaceId);
         }
-
-/*        if(!studySpace.isMaster(master)){
-            throw new StudySpaceNotMasterException(master, studySpace);
-        }*/
-
         return new StudySpaceResponse(studySpace);
-    }
-
-    @Transactional(readOnly = true)
-    public StudySpaceListResponse findStudySpaceListForUser(String title, int page, int pageSize){
-        PageRequest pageRequest = PageRequest.of(page, pageSize, new Sort(Sort.Direction.DESC, "createdAt"));
-        List<StudySpace> studySpaces;
-        if(!StringUtils.isEmpty(title)){
-            studySpaces = studySpaceRepository.findByTitleStartingWith(title, pageRequest);
-        }else{
-            studySpaces = studySpaceRepository.findAll(pageRequest).getContent();
-        }
-        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomSimpleListRequest(studySpaces.stream().map(i->new StudySpaceSimpleRequest(i)).collect(Collectors.toList())));
     }
 
     @Transactional
@@ -180,4 +162,21 @@ public class StudySpaceService {
         studySpaceRepository.delete(studySpace);
     }
 
+
+    /*
+
+
+    @Transactional(readOnly = true)
+    public StudySpaceListResponse findStudySpaceListForUser(String title, int page, int pageSize){
+        PageRequest pageRequest = PageRequest.of(page, pageSize, new Sort(Sort.Direction.DESC, "createdAt"));
+        List<StudySpace> studySpaces;
+        if(!StringUtils.isEmpty(title)){
+            studySpaces = studySpaceRepository.findByTitleStartingWith(title, pageRequest);
+        }else{
+            studySpaces = studySpaceRepository.findAll(pageRequest).getContent();
+        }
+        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomSimpleListRequest(studySpaces.stream().map(i->new StudySpaceSimpleRequest(i)).collect(Collectors.toList())));
+    }
+
+     */
 }

@@ -8,6 +8,6 @@ import com.superdev.toy.web.domain.ErrorCodes;
  */
 public class StudySpaceNotFoundException extends BaseException {
     public StudySpaceNotFoundException(StudySpaceId studySpaceId){
-        super(ErrorCodes.STUDY_ROOM_NOT_FOUND, "StudySpace not found [" + studySpaceId.idString() +"]");
+        super(ErrorCodes.STUDY_ROOM_NOT_FOUND, "StudySpaceInfo not found [" + studySpaceId.idString() +"]");
     }
 }

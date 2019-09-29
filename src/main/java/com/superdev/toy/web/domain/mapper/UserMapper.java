@@ -10,6 +10,6 @@ import org.mapstruct.ReportingPolicy;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
 
-    User map(UserRequest userRequest);
+    User map(UserRequest signupRequest);
 
 }

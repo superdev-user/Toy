@@ -5,6 +5,7 @@ import com.superdev.toy.app.exception.AlreadyParticipationStudySpaceException;
 import com.superdev.toy.app.exception.StudySpaceNotFoundException;
 import com.superdev.toy.app.exception.StudySpaceNotMasterException;
 import com.superdev.toy.app.service.StudySpaceService;
+import com.superdev.toy.web.common.jwt.JwtTokenProvider;
 import com.superdev.toy.web.domain.*;
 import com.superdev.toy.web.domain.mapper.StudySpaceMapper;
 import io.swagger.annotations.Api;
@@ -29,20 +30,10 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class StudySpaceResource {
 
-    private StudySpaceService studySpaceService;
-    private StudySpaceMapper studySpaceMapper;
-
     @Autowired
-    public StudySpaceResource(
-            StudySpaceService studySpaceService
-        , StudySpaceMapper studySpaceMapper
-    ){
-        this.studySpaceService = studySpaceService;
-        this.studySpaceMapper = studySpaceMapper;
-    }
+    private StudySpaceService studySpaceService;
 
 
-    @CrossOrigin("*")
     @ApiOperation(value = "스터디 모임 생성", response = StudySpaceResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
@@ -50,14 +41,11 @@ public class StudySpaceResource {
     @PostMapping
     public ResponseEntity saveStudySpace(
             @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @RequestBody StudySpaceRequest request
             ){
-
         try{
-            log.info("{}", user);
-            log.info("{} : {}", request.getTitle(), request.getDescription());
-//            return ResponseEntity.ok(studyRoomService.saveStudySpace(studySpaceMapper.map(request), user));
-            return ResponseEntity.ok(studySpaceService.saveStudySpace(request, user));
+            return ResponseEntity.ok(studySpaceService.saveStudySpace(request, user.getUsername()));
         }catch(Exception e){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -73,10 +61,11 @@ public class StudySpaceResource {
     @GetMapping("{studySpaceId}")
     public ResponseEntity findStudySpaceInfo(
             @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
     ){
         try{
-            return ResponseEntity.ok(studySpaceService.findStudySpaceInfo(studySpaceId, user));
+            return ResponseEntity.ok(studySpaceService.findStudySpaceInfo(studySpaceId, user.getUsername()));
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
         }catch (StudySpaceNotMasterException e){
@@ -84,48 +73,33 @@ public class StudySpaceResource {
         }
     }
 
-
-    @CrossOrigin("*")
     @ApiOperation(value = "스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
     })
     @GetMapping
     public ResponseEntity findStudySpaceList(
-            @AuthenticationPrincipal UserDetails user
-            , @RequestParam(name = "title", required = false) String title
-            , @RequestParam(name = "page", defaultValue = "0") int page
-            , @RequestParam(name = "pageSize", defaultValue = "20") int pageSize
-    ){
-        return ResponseEntity.ok(studySpaceService.findStudySpaceList(user, title, page, pageSize));
-    }
-
-    @ApiOperation(value = "사용자 스터디 모임 리스트 조회", response = StudySpaceListResponse.class)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "성공")
-    })
-    @GetMapping("list")
-    public ResponseEntity findStudySpaceListForUser(
             @RequestParam(name = "title", required = false) String title
             , @RequestParam(name = "page", defaultValue = "0") int page
             , @RequestParam(name = "pageSize", defaultValue = "20") int pageSize
     ){
-        return ResponseEntity.ok(studySpaceService.findStudySpaceListForUser(title, page, pageSize));
+        return ResponseEntity.ok(studySpaceService.findStudySpaceList(title, page, pageSize));
     }
-
 
     @ApiOperation(value = "스터디 모임 참가 신청", response = SuccessResponse.class)
     @ApiResponses({
             @ApiResponse(code = 200, message = "성공")
             , @ApiResponse(code = 404, message = "스터디 모임을 찾을 수 없습니다.")
     })
+
     @PutMapping("/participation/{studySpaceId}")
     public ResponseEntity participationStudySpace(
             @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId")StudySpaceId studySpaceId
             ){
         try{
-            studySpaceService.participationStudySpace(studySpaceId, user);
+            studySpaceService.participationStudySpace(studySpaceId, user.getUsername());
             return ResponseEntity.ok().build();
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
@@ -142,10 +116,11 @@ public class StudySpaceResource {
     @DeleteMapping("/participation/{studySpaceId}")
     public ResponseEntity unParticipationStudySpace(
             @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId")StudySpaceId studySpaceId
     ){
         try{
-            studySpaceService.unParticipationSpace(studySpaceId, user);
+            studySpaceService.unParticipationSpace(studySpaceId, user.getUsername());
             return ResponseEntity.ok().build();
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
@@ -161,13 +136,14 @@ public class StudySpaceResource {
     })
     @PutMapping("/approve/{studySpaceId}/{attendantNm}")
     public ResponseEntity approveAttendant(
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
             , @PathVariable(name = "attendantNm") String attendantNm
     ){
 
         try{
-            return ResponseEntity.ok(studySpaceService.approveStudySpaceAttendant(attendantNm, studySpaceId, userDetails));
+            return ResponseEntity.ok(studySpaceService.approveStudySpaceAttendant(attendantNm, studySpaceId, user.getUsername()));
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
         }catch (StudySpaceNotMasterException e){
@@ -183,20 +159,20 @@ public class StudySpaceResource {
     })
     @DeleteMapping("/approve/{studySpaceId}/{attendantNm}")
     public ResponseEntity unApproveAttendant(
-            @AuthenticationPrincipal UserDetails userDetails
+            @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
             , @PathVariable(name = "attendantNm") String attendantNm
     ){
 
         try{
-            return ResponseEntity.ok(studySpaceService.unApproveStudySpaceAttendant(attendantNm, studySpaceId, userDetails));
+            return ResponseEntity.ok(studySpaceService.unApproveStudySpaceAttendant(attendantNm, studySpaceId, user.getUsername()));
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
         }catch (StudySpaceNotMasterException e){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new SuccessResponse(e.errCode(), e.getMessage()));
         }
     }
-
 
     @ApiOperation(value = "스터디 모임 삭제 처리", response = SuccessResponse.class)
     @ApiResponses({
@@ -207,10 +183,11 @@ public class StudySpaceResource {
     @DeleteMapping("{studySpaceId}")
     public ResponseEntity deleteStudySpace(
             @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
             , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
     ){
         try{
-            studySpaceService.deleteStudySpace(user, studySpaceId);
+            studySpaceService.deleteStudySpace(user.getUsername(), studySpaceId);
             return ResponseEntity.ok().build();
         }catch(StudySpaceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));

@@ -7,11 +7,11 @@ import com.superdev.toy.app.exception.StudySpaceNotMasterException;
 import com.superdev.toy.app.repo.StudySpaceAttendantRepository;
 import com.superdev.toy.app.repo.StudySpaceRepository;
 import com.superdev.toy.web.domain.*;
+import com.superdev.toy.web.domain.StudySpaceInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -45,9 +45,9 @@ public class StudySpaceService {
 
 
 
-    private StudySpaceResponse saveStudySpace(StudySpace studySpace, UserDetails user){
+    private StudySpaceResponse saveStudySpace(StudySpace studySpace, String authName){
         log.info("{} : {}", studySpace.title(), studySpace.description());
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+        User master = (User) userService.loadUserByUsername(authName);
         studySpace.studySpaceMaster(master);
         studySpace.studySpaceId(new StudySpaceId(idGenerator.next()));
         StudySpace newStudySpace = studySpaceRepository.save(studySpace);
@@ -56,28 +56,27 @@ public class StudySpaceService {
     }
 
     @Transactional
-    public StudySpaceResponse saveStudySpace(StudySpaceRequest request, UserDetails user){
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+    public StudySpaceResponse saveStudySpace(StudySpaceRequest request, String authName){
+        User master = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = StudySpace.builder().title(request.getTitle()).description(request.getDescription()).master(master).build();
-        return saveStudySpace(studySpace, user);
+        return saveStudySpace(studySpace, authName);
     }
 
     @Transactional(readOnly = true)
-    public StudySpaceListResponse findStudySpaceList(UserDetails user, String title, int page, int pageSize){
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+    public StudySpaceListResponse findStudySpaceList(String title, int page, int pageSize){
         PageRequest pageRequest = PageRequest.of(page, pageSize, new Sort(Sort.Direction.DESC, "createdAt"));
         List<StudySpace> studySpaces;
         if(!StringUtils.isEmpty(title)){
-            studySpaces = studySpaceRepository.findByMasterAndTitleStartingWith(title, pageRequest);
+            studySpaces = studySpaceRepository.findByTitleStartingWith(title, pageRequest);
         }else{
-            studySpaces = studySpaceRepository.findByMaster(master, pageRequest);
+            studySpaces = studySpaceRepository.findAll(pageRequest).getContent();
         }
-        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomListRequest(studySpaces.stream().map(i->new StudySpaceRequest(i)).collect(Collectors.toList())));
+        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomListRequest(studySpaces.stream().map(i->new StudySpaceInfo(i)).collect(Collectors.toList())));
     }
 
     @Transactional
-    public StudySpaceAttendantResponse participationStudySpace(StudySpaceId studySpaceId, UserDetails user){
-        User applicant = (User) userService.loadUserByUsername(user.getUsername());
+    public StudySpaceAttendantResponse participationStudySpace(StudySpaceId studySpaceId, String authName){
+        User applicant = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
 
         if(studySpace == null){
@@ -89,8 +88,8 @@ public class StudySpaceService {
     }
 
     @Transactional
-    public void unParticipationSpace(StudySpaceId studySpaceId, UserDetails user){
-        User applicant = (User) userService.loadUserByUsername(user.getUsername());
+    public void unParticipationSpace(StudySpaceId studySpaceId, String authName){
+        User applicant = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
 
         if(studySpace == null){
@@ -101,9 +100,9 @@ public class StudySpaceService {
     }
 
     @Transactional
-    public StudySpaceResponse approveStudySpaceAttendant(String attendantNm, StudySpaceId studySpaceId, UserDetails user){
+    public StudySpaceResponse approveStudySpaceAttendant(String attendantNm, StudySpaceId studySpaceId, String authName){
         User attendant = (User) userService.loadUserByUsername(attendantNm);
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+        User master = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
         if(studySpace == null){
             throw new StudySpaceNotFoundException(studySpaceId);
@@ -119,9 +118,9 @@ public class StudySpaceService {
     }
 
     @Transactional
-    public StudySpaceResponse unApproveStudySpaceAttendant(String attendantNm, StudySpaceId studySpaceId, UserDetails user){
+    public StudySpaceResponse unApproveStudySpaceAttendant(String attendantNm, StudySpaceId studySpaceId, String authName){
         User attendant = (User) userService.loadUserByUsername(attendantNm);
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+        User master = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
         if(studySpace == null){
             throw new StudySpaceNotFoundException(studySpaceId);
@@ -138,35 +137,17 @@ public class StudySpaceService {
     }
 
     @Transactional(readOnly = true)
-    public StudySpaceResponse findStudySpaceInfo(StudySpaceId studySpaceId, UserDetails user){
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+    public StudySpaceResponse findStudySpaceInfo(StudySpaceId studySpaceId, String authName){
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
         if(studySpace == null){
             throw new StudySpaceNotFoundException(studySpaceId);
         }
-
-        if(!studySpace.isMaster(master)){
-            throw new StudySpaceNotMasterException(master, studySpace);
-        }
-
         return new StudySpaceResponse(studySpace);
     }
 
-    @Transactional(readOnly = true)
-    public StudySpaceListResponse findStudySpaceListForUser(String title, int page, int pageSize){
-        PageRequest pageRequest = PageRequest.of(page, pageSize, new Sort(Sort.Direction.DESC, "createdAt"));
-        List<StudySpace> studySpaces;
-        if(!StringUtils.isEmpty(title)){
-            studySpaces = studySpaceRepository.findByTitleStartingWith(title, pageRequest);
-        }else{
-            studySpaces = studySpaceRepository.findAll(pageRequest).getContent();
-        }
-        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomSimpleListRequest(studySpaces.stream().map(i->new StudySpaceSimpleRequest(i)).collect(Collectors.toList())));
-    }
-
     @Transactional
-    public void deleteStudySpace(UserDetails user, StudySpaceId studySpaceId){
-        User master = (User) userService.loadUserByUsername(user.getUsername());
+    public void deleteStudySpace(String authName, StudySpaceId studySpaceId){
+        User master = (User) userService.loadUserByUsername(authName);
         StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
         if(studySpace == null){
             throw new StudySpaceNotFoundException(studySpaceId);
@@ -181,4 +162,21 @@ public class StudySpaceService {
         studySpaceRepository.delete(studySpace);
     }
 
+
+    /*
+
+
+    @Transactional(readOnly = true)
+    public StudySpaceListResponse findStudySpaceListForUser(String title, int page, int pageSize){
+        PageRequest pageRequest = PageRequest.of(page, pageSize, new Sort(Sort.Direction.DESC, "createdAt"));
+        List<StudySpace> studySpaces;
+        if(!StringUtils.isEmpty(title)){
+            studySpaces = studySpaceRepository.findByTitleStartingWith(title, pageRequest);
+        }else{
+            studySpaces = studySpaceRepository.findAll(pageRequest).getContent();
+        }
+        return new StudySpaceListResponse(new StudySpaceListResponse.StudyRoomSimpleListRequest(studySpaces.stream().map(i->new StudySpaceSimpleRequest(i)).collect(Collectors.toList())));
+    }
+
+     */
 }

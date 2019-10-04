@@ -40,6 +40,14 @@ public class StudySpace {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column
+    private int category1;
+
+    @Column
+    private int category2;
+
+    @Column
+    private int category3;
 
     @OneToOne
     private User master;
@@ -161,5 +169,18 @@ public class StudySpace {
         this.operators = null;
         this.attendants = null;
     }
+
+    public int category1(){
+        return this.category1;
+    }
+
+    public int category2(){
+        return this.category2;
+    }
+
+    public int category3(){
+        return this.category3;
+    }
+
 
 }

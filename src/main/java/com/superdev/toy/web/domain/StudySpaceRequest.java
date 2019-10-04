@@ -15,10 +15,16 @@ import java.util.stream.Collectors;
 public class StudySpaceRequest {
     private String title;
     private String description;
+    private int category1;
+    private int category2;
+    private int category3;
 
     public StudySpaceRequest(StudySpace studySpace){
         this.title = studySpace.title();
         this.description = studySpace.description();
+        this.category1 = studySpace.category1();
+        this.category2 = studySpace.category2();
+        this.category3 = studySpace.category3();
     }
 
 }

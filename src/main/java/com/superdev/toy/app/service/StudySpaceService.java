@@ -58,7 +58,7 @@ public class StudySpaceService {
     @Transactional
     public StudySpaceResponse saveStudySpace(StudySpaceRequest request, String authName){
         User master = (User) userService.loadUserByUsername(authName);
-        StudySpace studySpace = StudySpace.builder().title(request.getTitle()).description(request.getDescription()).master(master).build();
+        StudySpace studySpace = StudySpace.builder().title(request.getTitle()).description(request.getDescription()).category1(request.getCategory1()).category2(request.getCategory2()).category3(request.getCategory3()).master(master).build();
         return saveStudySpace(studySpace, authName);
     }
 

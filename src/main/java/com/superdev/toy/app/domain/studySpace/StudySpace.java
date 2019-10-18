@@ -5,6 +5,7 @@ import com.superdev.toy.app.exception.AlreadyParticipationStudySpaceException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -35,18 +36,23 @@ public class StudySpace {
     private StudySpaceId studySpaceId;
 
     @Column(length = 100)
+    @Setter
     private String title;
 
     @Column(columnDefinition = "TEXT")
+    @Setter
     private String description;
 
     @Column
+    @Setter
     private int category1;
 
     @Column
+    @Setter
     private int category2;
 
     @Column
+    @Setter
     private int category3;
 
     @OneToOne

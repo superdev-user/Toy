@@ -196,4 +196,26 @@ public class StudySpaceResource {
         }
     }
 
+    @ApiOperation(value = "스터디 모임 수정 처리", response = SuccessResponse.class)
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "success")
+            , @ApiResponse(code = 404, message = "Study Space Not founded")
+            , @ApiResponse(code = 406, message = "User is not master of study Space")
+    })
+    @PutMapping("/{studySpaceId}")
+    public ResponseEntity updateStudySpace(
+            @AuthenticationPrincipal UserDetails user
+            , @RequestHeader(name="Authorization") String token
+            , @RequestBody StudySpaceRequest request
+            , @PathVariable(name = "studySpaceId") StudySpaceId studySpaceId
+    ){
+        try{
+            return ResponseEntity.ok(studySpaceService.updateStudySpace(request, studySpaceId, user.getUsername()));
+        } catch(StudySpaceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new SuccessResponse(e.errCode(), e.getMessage()));
+        } catch (StudySpaceNotMasterException e){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new SuccessResponse(e.errCode(), e.getMessage()));
+        }
+    }
+
 }

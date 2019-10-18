@@ -162,6 +162,27 @@ public class StudySpaceService {
         studySpaceRepository.delete(studySpace);
     }
 
+    @Transactional
+    public StudySpaceResponse updateStudySpace(StudySpaceRequest request, StudySpaceId studySpaceId, String authName){
+        User master = (User) userService.loadUserByUsername(authName);
+
+        StudySpace studySpace = studySpaceRepository.findByStudySpaceId(studySpaceId);
+        if(studySpace == null){
+            throw new StudySpaceNotFoundException(studySpaceId);
+        }
+        if(!studySpace.isMaster(master)){
+            throw new StudySpaceNotMasterException(master, studySpace);
+        }
+
+        studySpace.setTitle(request.getTitle());
+        studySpace.setDescription(request.getDescription());
+        studySpace.setCategory1(request.getCategory1());
+        studySpace.setCategory2(request.getCategory2());
+        studySpace.setCategory3(request.getCategory3());
+
+        return new StudySpaceResponse(studySpaceRepository.save(studySpace));
+    }
+
 
     /*
 
